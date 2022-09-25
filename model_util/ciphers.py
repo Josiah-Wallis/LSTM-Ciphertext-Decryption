@@ -163,7 +163,7 @@ def hill(text, key):
 
 # Polyciphers
 def columnar_autokey(text, key):
-    return irreg_columnar(autokey(text, k1), k2)
+    return irreg_columnar(autokey(text, key[0]), key[1])
 
 def rail_hill(text, key):
     return railfence(hill(text, key[0]), key[1])
