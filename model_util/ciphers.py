@@ -2,6 +2,7 @@ import numpy as np
 
 # Transposition Ciphers
 def place(text, key, i, grid):
+    # Used for railfence
     boundary = key - 1
     lim = boundary * 2
     split = 1 if (i % lim) < boundary else 2
@@ -179,6 +180,7 @@ def beaufort_rail(text, key):
 
 # Paper Encryption
 def special_caesar(t1, t2, key):
+    # Used for paper encryption
     odd = np.array([c for c in t1])
     even = np.array([c for c in t2])
 
@@ -206,6 +208,7 @@ def special_caesar(t1, t2, key):
     return ''.join(odd_word), ''.join(even_word)
 
 def pos_replace(text):
+    # Used for paper encryption
     word = np.array([c for c in text])
     length = len(text)
     first = 0
@@ -228,6 +231,7 @@ def pos_replace(text):
     return ''.join(word.tolist())
 
 def advanced_sub(text, key):
+    # Final Encryption
     if len(text) < 3:
         return text
     keylength = len(text)

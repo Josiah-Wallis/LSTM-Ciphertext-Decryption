@@ -5,9 +5,12 @@ from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.sequence import pad_sequences
+from typing import Iterable, Any
 from model_util.ciphers import *
 
 def one_hot_encoding(word, uniques):
+    # OHE plaintext words
+    
     N = word.shape[0]
     enc = np.zeros((N, uniques.shape[0]))
     for i in range(N):
@@ -15,6 +18,8 @@ def one_hot_encoding(word, uniques):
     return enc
 
 def build_model(max_word_length, num_uniques, units, learning_rate):
+    # Construct RNN with given architecture
+    
     model = Sequential([
         Bidirectional(LSTM(units, return_sequences = True), input_shape = (max_word_length, num_uniques)),
         Bidirectional(LSTM(32, return_sequences = True)),
@@ -25,6 +30,8 @@ def build_model(max_word_length, num_uniques, units, learning_rate):
     return model
 
 def decode_preds(preds, uniques):
+    # Decode the softmax predictions of RNN
+    
     func = np.vectorize(chr)
     chars = preds.argmax(axis = 2)
     words = func(uniques[chars]).tolist()
@@ -32,6 +39,7 @@ def decode_preds(preds, uniques):
 
     return words
 
+# Store monociphers
 monociphers = {
     1: np.vectorize(railfence),
     2: np.vectorize(irreg_columnar),
@@ -41,6 +49,7 @@ monociphers = {
     6: np.vectorize(hill)
 }
 
+# Store polyciphers + paper cipher
 polyciphers = {
     1: (np.vectorize(autokey), np.vectorize(irreg_columnar)),
     2: (np.vectorize(hill), np.vectorize(railfence)),
@@ -50,7 +59,13 @@ polyciphers = {
     6: np.vectorize(advanced_sub)
 }
 
-def build_and_train_model(choice, key, frac_words = 0.5, batch_size = 32, learning_rate = 0.001, validation_split = 0.2, test_size = 0.2, epochs = 5, units = 64, seed = 100):
+def build_and_train_model(choice: tuple[int, int], key: Iterable[Any], frac_words: float = 0.5, batch_size: int = 32, learning_rate: float = 0.001, validation_split: float = 0.2, test_size: float = 0.2, epochs: int = 5, units: int = 64, seed: int = 100) -> tuple:
+    """
+    Encrypts, tokenizes, and pads plaintext words from words_alpha.txt.
+    Constructs training and test data, then trains RNN on training data.
+    Returns the trained model, model history, word accuracy, predicted words, and true words.
+    """
+    
     tf.keras.utils.set_random_seed(seed)
     tf.config.experimental.enable_op_determinism()
     
