@@ -5,7 +5,7 @@ from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Bidirectional, LSTM, Dense
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from typing import Iterable, Any
+from typing import Any
 from model_util.ciphers import *
 
 def one_hot_encoding(word, uniques):
@@ -59,16 +59,30 @@ polyciphers = {
     6: np.vectorize(advanced_sub)
 }
 
-def build_and_train_model(choice: tuple[int, int], key: Iterable[Any], frac_words: float = 0.5, batch_size: int = 32, learning_rate: float = 0.001, validation_split: float = 0.2, test_size: float = 0.2, epochs: int = 5, units: int = 64, seed: int = 100) -> tuple:
+def build_and_train_model(choice: tuple[int, int], key: Any, frac_words: float = 0.5, batch_size: int = 32, learning_rate: float = 0.001, validation_split: float = 0.2, test_size: float = 0.2, epochs: int = 5, units: int = 64, seed: int = 100) -> tuple:
     """
     Encrypts, tokenizes, and pads plaintext words from words_alpha.txt.
     Constructs training and test data, then trains RNN on training data.
     Returns the trained model, model history, word accuracy, predicted words, and true words.
+    ------------------------------------------
+    Relevant Inputs:
+        - choice[0]: 0 (monocipher), 1 (polycipher)
+        - choice[1]: 1-6 (selection of cipher) 
+        - key: dependent on choice of cipher
+        - frac_words: fraction of total words to use from entire word list (370k in total)
+        
+    Outputs:
+        - model: trained LSTM model on choice enciphered data
+        - history: history object associated with model training
+        - acc: word-to-word accuracy on test data
+        - preds: RNN-predicted words
+        - true: true words
     """
     
     tf.keras.utils.set_random_seed(seed)
     tf.config.experimental.enable_op_determinism()
     
+    # Load dataset amd shuffle
     words = np.loadtxt('words_alpha.txt', dtype = str)
     total_words = words.shape[0]
     idx = np.random.permutation(total_words)
@@ -77,6 +91,7 @@ def build_and_train_model(choice: tuple[int, int], key: Iterable[Any], frac_word
     M = words.shape[0]
     max_word_length = len(max(words, key = len))
 
+    # Grab cipher from dicts
     if choice[0] == 0:
         encrypt = monociphers[choice[1]]
         words_enc = encrypt(words, key)
@@ -90,29 +105,35 @@ def build_and_train_model(choice: tuple[int, int], key: Iterable[Any], frac_word
     else:
         raise Exception('Invalid cipher type (choose 0/1)')
 
+    # Tokenize inputs
     tokenizer = tf_text.UnicodeCharTokenizer()
     X_tokens = tokenizer.tokenize(words_enc).to_list()
     y_tokens = tokenizer.tokenize(words).to_list()
 
+    # Pad inputs so all inputs are same size
     X_pad = pad_sequences(X_tokens, maxlen = max_word_length, padding = 'post', truncating = 'post')
     y_pad = pad_sequences(y_tokens, maxlen = max_word_length, padding = 'post', truncating = 'post')
 
     uniques = np.unique(y_pad)
     num_uniques = uniques.shape[0]
 
+    # Build dataset
     X = np.zeros((M, max_word_length, num_uniques))
     y = np.zeros((M, max_word_length, num_uniques))
     for i in range(M):
         X[i] = one_hot_encoding(X_pad[i], uniques)
         y[i] = one_hot_encoding(y_pad[i], uniques)
 
+    # Construct training/test sets
     split = int(M * (1 - test_size))
     train_x, test_x = X[:split], X[split:]
     train_y, test_y = y[:split], y[split:]
 
+    # Build and train model
     model = build_model(max_word_length, num_uniques, units, learning_rate)
     history = model.fit(train_x, train_y, validation_split = validation_split, epochs = epochs, use_multiprocessing = True, batch_size = batch_size, verbose = 0)
 
+    # Predict on test set (word-to-word accuracy)
     predictions = model.predict(test_x, verbose = 0)
     preds = decode_preds(predictions, uniques)
     true = decode_preds(test_y, uniques)
