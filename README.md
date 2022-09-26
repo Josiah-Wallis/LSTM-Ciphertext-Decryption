@@ -21,10 +21,10 @@ The setup was built using:
 
 ### Usage
 To quickly get started training, below is a quick-start usage case:
-```
+```python
 from model_util.build_model import build_and_train_model
 
-'''python
+'''
 # choice[0] == 0
 monociphers = {
     1: np.vectorize(railfence),
