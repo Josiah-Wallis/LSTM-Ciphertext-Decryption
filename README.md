@@ -1,5 +1,5 @@
 # Supervised LSTM Ciphertext Decryption
-In the field of **cryptography**, **encryption algorithms** are used to transform plaintext strings into altered strings of variable size. This process **increases** the **security** of **information** being transmitted across communication channels. Here, I present a **proof of concept** that **supervised LSTM** recurrent neural networks (RNN) are **more efficient** at deciphering plaintext ciphers **than typical** cryptographic and cryptanalysis **techniques**. I also present an **LSTM's performance** on a [complex encryption algorithm][paper cipher] conjectured in 2014 with **fruitful results**.
+In the field of **cryptography**, **encryption algorithms** are used to transform plaintext strings into altered strings of variable size. This process **increases** the **security** of **information** being transmitted across communication channels. Here, I present a **proof of concept** that **supervised LSTM** recurrent neural networks (RNN) are **more efficient** at deciphering plaintext ciphers **than typical** cryptographic and cryptanalysis **techniques**. I also present an **LSTM's performance** on a [complex encryption algorithm][paper cipher] conjectured in 2014 with **fruitful results**. A paper rough draft can be found [here][link to my paper]
 
 # Implementation
 ### Overview
