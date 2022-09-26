@@ -61,7 +61,7 @@ Additionally, the LSTM architecture performs very well on the plaintext words en
 ![output2.png](https://www.dropbox.com/s/wpksmiw1dhkcg7y/output2.png?dl=0&raw=1)
 
 # Conclusion
-Because the validation accuracy isn't 100%, sometimes characters are predicted incorrectly thus decreasing the word-to-word accuracy. In cases of slightly mismatched lettering, the correct word can be easily inferred from the predicted word. All in all, the results demonstrate this method of cryptanalysis provides a new frontier by which cryptologists may approach decryption.
+Because the validation accuracy isn't 100%, sometimes characters are predicted incorrectly thus decreasing the word-to-word accuracy. In cases of slightly mismatched lettering, the correct word can be easily inferred from the predicted word. All in all, the results demonstrate this method of cryptanalysis provides a new frontier by which cryptographers may approach decryption.
 
 # Contact
 Please send any questions, comments, or inquiries to jwall014@ucr.edu. A paper rough draft can be found [here][link to my paper].
