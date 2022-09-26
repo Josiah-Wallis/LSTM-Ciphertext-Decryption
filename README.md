@@ -56,9 +56,9 @@ For full implementation and documentation details of the arguments and methods u
 
 # Results
 Provided below are the validation accuracies of RNNs trained on data enciphered by polyciphers. In each case, the RNNs achieve over 96% validation accuracy (character-to-character). 
-![output1.png](https://www.dropbox.com/s/nqtf8f8m0vn1ms6/output1.png?dl=0&raw=1)
+![output1.png](https://www.dropbox.com/s/q89ws5owrlu70a1/output1.png?dl=0&raw=1)
 Additionally, the LSTM architecture performs very well on the plaintext words encrypted using the [2014 cipher][paper cipher], obtaining a validation accuracy of almost 100%.
-![output2.png](https://www.dropbox.com/s/nd13kek940uulx5/output2.png?dl=0&raw=1)
+![output2.png](https://www.dropbox.com/s/wpksmiw1dhkcg7y/output2.png?dl=0&raw=1)
 
 # Conclusion
 Because the validation accuracy isn't 100%, sometimes characters are predicted incorrectly thus decreasing the word-to-word accuracy. In cases of slightly mismatched lettering, the correct word can be easily inferred from the predicted word. All in all, the results demonstrate this method of cryptanalysis provides a new frontier by which cryptologists may approach decryption.
